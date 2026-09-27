@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="gu">
 
@@ -547,6 +546,174 @@
       --ink-soft: #c9b3a2;
       --line: rgba(217, 164, 65, .22);
     }
+
+    /* ---- PRINT BUTTON ---- */
+    .print-btn {
+      margin-left: 6px;
+      border: 1px solid rgba(217, 164, 65, .45);
+      background: rgba(217, 164, 65, .18);
+      color: var(--gold-light);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .print-btn:hover,
+    .print-btn:active {
+      background: rgba(217, 164, 65, .32);
+    }
+
+    .print-fab {
+      display: none;
+    }
+
+    /* ---- MOBILE ---- */
+    @media (max-width: 760px) {
+
+      .navwrap {
+        padding: 8px 10px;
+        gap: 4px;
+      }
+
+      .brand {
+        font-size: 12.5px;
+        margin-right: 8px;
+      }
+
+      .navwrap a {
+        font-size: 12.5px;
+        padding: 6px 9px;
+      }
+
+      .print-btn {
+        display: none;
+        /* replaced by floating button on mobile */
+      }
+
+      .print-fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold), var(--maroon));
+        color: #fff;
+        font-size: 22px;
+        border: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+        z-index: 60;
+        cursor: pointer;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 60px;
+      }
+
+      .hero-inner {
+        padding: 26px 16px 34px;
+      }
+
+      section {
+        padding: 34px 14px;
+      }
+
+      .grid-stats,
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card,
+      .hstat {
+        padding: 12px 12px;
+      }
+
+      .card .val {
+        font-size: 19px;
+      }
+
+      table {
+        font-size: 12.5px;
+        min-width: 420px;
+      }
+
+      thead th,
+      tbody td {
+        padding: 8px 9px;
+      }
+
+      .toolbar input[type=text] {
+        min-width: 140px;
+      }
+
+      .seva-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow .fbox {
+        min-width: 130px;
+      }
+
+      footer {
+        padding: 30px 14px 40px;
+      }
+    }
+
+    /* ---- PRINT ---- */
+    @media print {
+
+      body::before,
+      nav,
+      .print-btn,
+      .print-fab,
+      .toolbar,
+      .chart-row,
+      .hint {
+        display: none !important;
+      }
+
+      .hero {
+        min-height: auto;
+        background-image: none !important;
+        background-color: var(--maroon-dark);
+        page-break-after: avoid;
+      }
+
+      section {
+        padding: 14px 6px;
+        page-break-inside: avoid;
+      }
+
+      .table-wrap {
+        overflow: visible;
+      }
+
+      table {
+        min-width: 0;
+        font-size: 11px;
+      }
+
+      thead th {
+        position: static;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      a[href]::after {
+        content: "";
+      }
+    }
   </style>
 </head>
 
@@ -561,6 +728,7 @@
         <a href="#expenses">ખર્ચ</a>
         <a href="#seva">સેવા</a>
         <a href="#pnl">P&amp;L</a>
+        <button class="print-btn" id="printBtn" onclick="window.print()" title="Print / Save as PDF">🖨️ Print</button>
       </div>
     </nav>
 
@@ -749,10 +917,12 @@
     </footer>
   </div>
 
+  <button class="print-fab" id="printFab" onclick="window.print()" title="Print / Save as PDF">🖨️</button>
+
   <script>
     const DONORS = [{ "n": 1, "name": "2025 નું ગણપતિ બેલેન્સ", "amount": 10000.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 2, "name": "જમણવાર ની લખની", "amount": 9101.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 3, "name": "દાન પેટી", "amount": 6814.0, "mode": "Cash", "holder": "" }, { "n": 4, "name": "પટેલ કૃણાલભાઈ વસંતભાઈ", "amount": 5500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 5, "name": "પટેલ સૌરભભાઈ હસમુખભાઈ", "amount": 1322.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 6, "name": "પટેલ નિકુલભાઈ પ્રભુદાસ — South Africa", "amount": 1322.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 7, "name": "પટેલ મહેશભાઈ રમણભાઈ", "amount": 1001.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 8, "name": "પટેલ હર્ષદભાઈ સોમાભાઈ", "amount": 1001.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 9, "name": "પટેલ ગોવિંદભાઈ મથુરભાઈ", "amount": 1001.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 10, "name": "પટેલ જૈમિનભાઈ મહેશભાઈ", "amount": 1000.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 11, "name": "સ્વામિનારાયણ યુવક મંડળ", "amount": 1000.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 12, "name": "પટેલ જગદીશભાઈ કાંતિભાઈ", "amount": 1000.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 13, "name": "પટેલ વિપુલભાઈ મુકુનભાઈ", "amount": 1000.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 14, "name": "Karmadi વિકા મંડળી", "amount": 1000.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 15, "name": "પટેલ મેહુલકુમાર રાજુભાઈ (ઓસ્ટ્રેલિયા)", "amount": 1000.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 16, "name": "પટેલ નિકુલભાઈ ગોવિંદભાઈ", "amount": 1000.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 17, "name": "પટેલ મૌલિકભાઈ જયંતીભાઈ", "amount": 1000.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 18, "name": "પટેલ ઇલેશભાઈ મગનભાઈ", "amount": 1000.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 19, "name": "પ્રજાપતિ કલ્પેશભાઈ નાનજીભાઈ", "amount": 1000.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 20, "name": "પટેલ સંદીપભાઈ રાજુભાઈ", "amount": 1000.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 21, "name": "રામ ભરોસે", "amount": 750.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 22, "name": "પટેલ પ્રદીપભાઈ પ્રભુભાઈ", "amount": 501.0, "mode": "Cash", "holder": "હર્ષંદભાઈ" }, { "n": 23, "name": "પટેલ હિમાંશુભાઈ પરસોતમભાઈ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 24, "name": "પટેલ મીતભાઈ રાકેશભાઈ (સ્વ. કમુબેન)", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 25, "name": "પટેલ પાર્થભાઈ ગિરીશભાઈ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 26, "name": "પટેલ પ્રહર્ષ પ્રવીણચંદ્ર", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 27, "name": "પટેલ હરિભાઈ જયેશભાઈ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 28, "name": "પટેલ કાવ્યા કીર્તિકુમાર", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 29, "name": "પટેલ મીનાક્ષીબેન સુખદેવભાઈ", "amount": 501.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 30, "name": "પટેલ ક્રિસ મહેન્દ્રભાઈ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 31, "name": "ઠાકોરભાઈ બકોરભાઈ", "amount": 501.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 32, "name": "પટેલ અરવિંદભાઈ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 33, "name": "પટેલ રક્ષાબેન નિરવભાઈ", "amount": 501.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 34, "name": " પટેલ કુંજ વિનયભાઈ ", "amount": 501.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 35, "name": "પટેલ સુશીલાબેન ભાઈલાલભાઈ", "amount": 501.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 36, "name": "પટેલ પ્રતીક વિરેન્દ્રભાઈ", "amount": 501.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 37, "name": "પટેલ ચિરાગભાઈ જયદેવભાઈ", "amount": 501.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 38, "name": "પટેલ પરેશભાઈ પ્રભુદાસભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 39, "name": "પટેલ પરેશભાઈ મણિલાલ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 40, "name": "પટેલ ધ્રુવીક રમેશભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 41, "name": "પટેલ મિવાન કુલદીપભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 42, "name": "પટેલ શાંતિલાલ રણછોડભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 43, "name": "પટેલ યોગેશભાઈ રમેશભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 44, "name": "પટેલ જલ્પ મોહિતભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 45, "name": "સ્વામિનારાયણ મહિલા મંડળ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 46, "name": "પટેલ મુકેશભાઈ સોમાભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 47, "name": "પટેલ હર્ષિવ દર્પણભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 48, "name": "પટેલ વિશાલકુમાર", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 49, "name": "પટેલ યાજ્ઞિકભાઈ રાજુભાઈ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 50, "name": "પટેલ યોગેશભાઈ ઠાકોરભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 51, "name": "પટેલ દર્શન ભગવાનદાસ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 52, "name": "પટેલ મયુરભાઈ નરહરીભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 53, "name": "પટેલ ભાર્ગવ ભરતભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 54, "name": "પટેલ નિરવભાઈ ભગવાનદાસભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 55, "name": "પટેલ ભગવાનદાસ માધવભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 56, "name": "પટેલ મૃગેશભાઈ નરેન્દ્રભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 57, "name": "પટેલ ભાવિન જશુભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 58, "name": "નિસર્ગ ચિરાગભાઈ પટેલ", "amount": 500.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 59, "name": "પટેલ હિમાંશુભાઈ હરમાનભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 60, "name": "પટેલ જગદીશભાઈ હરમાનભાઈ", "amount": 500.0, "mode": "GPay", "holder": "હર્ષદભાઈ" }, { "n": 61, "name": "પટેલ મંત્ર કુમાર કેતનભાઈ", "amount": 500.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 62, "name": "પટેલ ઘનશ્યામભાઈ નવનીતભાઈ", "amount": 351.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 63, "name": "પટેલ સૌરભભાઈ નરેન્દ્રભાઈ", "amount": 300.0, "mode": "GPay", "holder": "ઉત્કર્ષ" }, { "n": 64, "name": "મિસ્ત્રી શિવાંશ દીપકભાઈ", "amount": 251.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 65, "name": "પટેલ અરવિંદભાઈ વિઠ્ઠલભાઈ", "amount": 251.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 66, "name": "પટેલ દિનેશભાઈ ધનજીભાઈ", "amount": 200.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 67, "name": "મિસ્ત્રી સંજયભાઈ", "amount": 200.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 68, "name": "પટેલ મણિલાલભાઈ માધવભાઈ", "amount": 200.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 69, "name": "પટેલ રમેશભાઈ છગનભાઈ", "amount": 200.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 70, "name": "પટેલ સુખદેવ મણિલાલ ", "amount": 200.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }, { "n": 71, "name": "પટેલ રંજનબેન ઠાકોરભાઈ", "amount": 100.0, "mode": "Cash", "holder": "ઉત્કર્ષ" }];
     const EXPENSES = [{ "n": 1, "item": "જમણવાર ખર્ચ", "amount": 17318.0, "payer": "" }, { "n": 2, "item": "ડેકોરેશન", "amount": 4360.0, "payer": "ઉત્કર્ષ" }, { "n": 3, "item": "જનરેટર એડવાંસ", "amount": 3000.0, "payer": "ઉત્કર્ષ" }, { "n": 4, "item": "અન્નકૂટ પ્રસાદ", "amount": 2400.0, "payer": "ઉત્કર્ષ" }, { "n": 5, "item": "મજુરી", "amount": 1700.0, "payer": "ઉત્કર્ષ" }, { "n": 6, "item": "પ્રસાદ", "amount": 1660.0, "payer": "ઉત્કર્ષ" }, { "n": 7, "item": "પૂજાનો સામાન", "amount": 1324.0, "payer": "ઉત્કર્ષ" }, { "n": 8, "item": "ડીઝલ", "amount": 1000.0, "payer": "ઉત્કર્ષ" }, { "n": 9, "item": "DJ બેલ્ટ", "amount": 920.0, "payer": "ઉત્કર્ષ" }, { "n": 10, "item": "રિક્ષા ભાડું", "amount": 600.0, "payer": "ઉત્કર્ષ" }, { "n": 11, "item": "મહારાજને પૂજા માટે", "amount": 501.0, "payer": "ઉત્કર્ષ" }, { "n": 12, "item": "ગણેશજી વિસર્જન", "amount": 500.0, "payer": "ઉત્કર્ષ" }, { "n": 13, "item": "ફૂલહાર", "amount": 260.0, "payer": "ઉત્કર્ષ" }];
-    const SEVA = { "મોટી મૂર્તિના દાતા": ["પટેલ કૃણાલભાઈ વસંતભાઈ"], "નાની મૂર્તિના દાતા": ["પટેલ કૃણાલભાઈ વસંતભાઈ", "પટેલ વનીતાબેન અનિલભાઈ", "પટેલ સૌરભભાઈ હસમુખભાઈ", "પટેલ નિમીષા બેન ઉમેશભાઈ"], "નાસ્તાના દાતા": ["પટેલ ઉત્કર્ષ દિનેશભાઈ", "પટેલ વેદાંત અશ્વિનભાઈ", "પટેલ અર્પિત સુરેશભાઈ", "પટેલ ગૌરંગ મહેશભાઈ", "પટેલ દિવ્યાંગ ભગવાનદાસ", "પટેલ પ્રશાંત ભગવાનદાસ", "પટેલ પ્રણવ મુકેશભાઈ", "પટેલ તુષાર મહેશભાઈ"], "Gift Donors": ["પટેલ સૌરભભાઈ હસમુખભાઈ", "પટેલ કુણેશભાઈ વિનોદભાઈ", "પટેલ કેયૂરભાઈ વિષ્ણુભાઈ", "પટેલ હિમાંશુભાઈ ભુપેન્દ્રભાઈ", "પટેલ અલ્પેશભાઈ સોમાભાઈ", "પટેલ નિકુલભાઈ પ્રભુદાસ — South Africa", "પટેલ કલ્પિતભાઈ હીરુભાઈ"], "🚛 Tempo Service": ["પટેલ ચિરાગભાઈ ભાઈલાલભાઈ"], "🌸 Flower Garland Service": ["પટેલ વનીતાબેન મુકેશભાઈ", "પટેલ દિવ્યાબેન વિનયભાઈ", "પટેલ પિકુબેન પ્રદીપભાઈ"] };
+    const SEVA = { "મોટી મૂર્તિના દાતા": ["પટેલ કૃણાલભાઈ વસંતભાઈ"], "નાની મૂર્તિના દાતા": ["પટેલ કૃણાલભાઈ વસંતભાઈ", "પટેલ વનીતાબેન અનિલભાઈ", "પટેલ સૌરભભાઈ હસમુખભાઈ", "પટેલ નિમીષા બેન ઉમેશભાઈ"], "નાસ્તાના દાતા": ["પટેલ ઉત્કર્ષ દિનેશભાઈ", "પટેલ વેદાંત અશ્વિનભાઈ", "પટેલ અર્પિત સુરેશભાઈ", "પટેલ ગૌરંગ મહેશભાઈ", "પટેલ દિવ્યાંગ ભગવાનદાસ", "પટેલ પ્રશાંત ભગવાનદાસ", "પટેલ પ્રણવ મુકેશભાઈ", "પટેલ તુષાર મહેશભાઈ"], "Gift Donors": ["પટેલ સૌરભભાઈ હસમુખભાઈ", "પટેલ કુણેશભાઈ વિનોદભાઈ", "પટેલ કેયૂરભાઈ વિષ્ણુભાઈ", "પટેલ હિમાંશુભાઈ ભુપેન્દ્રભાઈ", "પટેલ અલ્પેશભાઈ સોમાભાઈ", "પટેલ નિકુલભાઈ પ્રભુદાસ — South Africa", "પટેલ કલ્પિતભાઈ હીરુભાઈ"], "🚛 Tempo Service": ["પટેલ ચિરાગભાઈ ભાઈલાલભાઈ"], "🌸 Flower Garland Service": ["પટેલ વનીતાબેન મુકેશભાઈ", "પટેલ દિવ્યાબેન વિનયભાઈ", "પટેલ પિકુબેન પ્રદીપભાઈ"], "🥛 છાસના દાતા": ["પટેલ કલ્પિતભાઈ હીરુભાઈ", "પટેલ મૌલિકભાઈ ગિરીશભાઈ", "પટેલ ભર્ગોભાઈ ભરતભાઈ", "પટેલ કેતનભાઈ અંબુભાઈ", "પટેલ આયુષભાઈ અશોકભાઈ"] };
 
     const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
 
